@@ -1,3 +1,3 @@
 # Similaridades entre PPGs
-## Criado em 14 de janeiro de 2021
+## Espaço criado para uso exclusivo da CAPES
 Análises, visualizações e notebooks sobre similaridades semânticas entre programas de pós-graduação brasileiros.
