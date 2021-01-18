@@ -11,18 +11,20 @@ from ipywidgets import Output, VBox, HBox, widgets, interactive
 
 from pathlib import Path
 
+'''
 relative_path 		= Path(__file__).parent
 pasta				= {}
 #pasta['main'] 		= relative_path.as_posix() + '/'
 pasta['estudos'] 	= relative_path.as_posix() + '../estudos/'
-
+'''
+pasta_estudos = '../estudos/'
 
 def grafo_mds_ppgs(df=None, dimensoes=3):
 
 	# Le arquivo previamente preparado
 	if df is None:
 		fname = 'SIMILARIDADE_DE_PPGS_None_None_COM_PPG_teses_%sD.csv' % dimensoes
-		df=pd.read_csv(pasta['estudos']+fname, sep=';', encoding='utf-8')
+		df=pd.read_csv(pasta_estudos + fname, sep=';', encoding='utf-8')
 
 	df.set_index('_id', drop=False, inplace=True)
 
