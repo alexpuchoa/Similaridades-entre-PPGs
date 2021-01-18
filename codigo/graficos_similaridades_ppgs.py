@@ -13,8 +13,8 @@ from pathlib import Path
 
 relative_path 		= Path(__file__).parent
 pasta				= {}
-pasta['main'] 		= relative_path.as_posix() + '/'
-pasta['estudos'] 	= relative_path.as_posix() + '/estudos/'
+#pasta['main'] 		= relative_path.as_posix() + '/'
+pasta['estudos'] 	= relative_path.as_posix() + '../estudos/'
 
 
 def grafo_mds_ppgs(df=None, dimensoes=3):
