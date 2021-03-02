@@ -8,6 +8,9 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 import qgrid
+import sys
+
+sys.path.append('..')
 
 from ipywidgets import Output, VBox, HBox, widgets, interactive
 from IPython.display import display
@@ -15,12 +18,7 @@ from IPython.display import display
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from IPython import get_ipython
-ipython = get_ipython()
-ipython.magic("%load_ext autoreload")
-ipython.magic("%autoreload 2")
-
-from capes_nlp import maissimilar_short_v5 as MS
+import maissimilar_short_v5 as MS
 
 relative_path 		= Path(__file__).parent
 pasta				= {}

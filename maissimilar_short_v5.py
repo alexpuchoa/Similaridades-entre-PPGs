@@ -9,7 +9,6 @@ Modificações:
 
 Por Alexandre Uchoa
 '''
-# -*- coding: utf-8 -*-
 import re
 import h5py
 import numpy as np
@@ -17,38 +16,34 @@ import pandas as pd
 
 from time import time
 
+from pathlib import Path
+relative_path = Path(__file__).parent
 
-from capes_nlp import pasta, pastaWP
-pasta_main_WP 	= pastaWP['main']
+pasta			= {}
+pasta['main'] 	= relative_path.as_posix() + '/'
+pasta['modelos']= relative_path.as_posix() + '/modelos/'
+pasta['estudos']= relative_path.as_posix() + '/estudos/'
+
 pasta_main		= pasta['main']
 pasta_modelos 	= pasta['modelos']
 pasta_estudos 	= pasta['estudos']
 
 #------------------------------------------------------------------------------
 # Determina a similaridade entre tags de entidades
-# a partir de um modelo já gerado 
+# a partir de representações de distribuição geradas preiviamente
 #------------------------------------------------------------------------------
 class MaisSimilar_Short(object):
 
-	def __init__(self, tipo_producao='teses', \
-					   modelo_fn=None):
-		if tipo_producao is None:
-			print('\n** FORNECA UM TIPO DE PRODUCAO (teses, topicos, artigos)')
-		#self.AA = AreaAvaliacao()
+	def __init__(self, modelo_fn=None):
 		self.pasta_modelos 	= pasta_modelos
 		self.pasta_estudos 	= pasta_estudos
-		self.tipo_producao 	= tipo_producao
+		self.tipo_producao 	= 'teses'
 		self.usa_hdf5 		= True
-
 		self.load_modelo_hdf5(modelo_fn=modelo_fn)
 
 
-	# Carrega arquivos HDF5 e NPY ao inves do modelo d2v inteiro
 	def load_modelo_hdf5(self, modelo_fn=None):
-		#print("\n*** Carregando vetores de HDF5")
-
 		if modelo_fn is None:
-
 			if self.tipo_producao.startswith('tese'):
 				modelo_fn = "0_d2v-teses_model.mm"
 
@@ -69,29 +64,19 @@ class MaisSimilar_Short(object):
 		else:
 			if modelo_fn[-3:] != '.mm': modelo_fn += '.mm'
 
-		# Carrega somente arquivos com indices e vetores DOCVECS
+		# Forma nomes de arquivos
 		self.docvecs_dv_fn 	= modelo_fn + ".docvecs.vectors_docs.hdf5"
-		index_dv_fn 	= modelo_fn + ".docvecs.index_docs.npy"
-		self.docvecs_wv_fn 	= modelo_fn + ".wv.vectors.hdf5"
-		index_wv_fn 	= modelo_fn + ".wv.index.npy"
+		index_dv_fn 		= modelo_fn + ".docvecs.index_docs.npy"
 
-		# Cria DF com indices dos vetores DOCVECS e tags
+		# Cria DF com indices dos docvecs e tags
 		self.d2v_index = pd.DataFrame(np.load(pasta_modelos + index_dv_fn),\
 									  columns=['tags'])
 		self.d2v_index.set_index('tags',inplace=True,drop=True)
 		self.d2v_index = self.d2v_index.assign(pos=range(len(self.d2v_index)))
 
-		# Cria DF com indices dos vetores de WV e tags
-		self.d2v_wv_index = pd.DataFrame(np.load(pasta_modelos + index_wv_fn),\
-										 columns=['tags'])
-		self.d2v_wv_index.set_index('tags',inplace=True,drop=True)
-		self.d2v_wv_index = self.d2v_wv_index.assign(pos=range(len(self.d2v_wv_index)))
-
-		# Abre HDF5 com vetores docvecs
+		# Abre HDF5 com docvecs
 		h5py_f1 = h5py.File(pasta_modelos + self.docvecs_dv_fn, 'r')
 		self.d2v_docvecs = h5py_f1['docvecs']
-		h5py_f2 = h5py.File(pasta_modelos + self.docvecs_wv_fn, 'r')
-		self.d2v_wordvecs = h5py_f2['wv']
 
 
 
@@ -105,7 +90,6 @@ class MaisSimilar_Short(object):
 		np_so_docvecs = self.d2v_docvecs[df_tags2['pos'].to_list()]
 
 		vec_tag1 = np_so_docvecs[df_tags2.index == tag1]
-		#vec_tag2 = self.d2v_docvecs[df_tags2['pos'].to_list()]
 		vec_tag2 = np_so_docvecs
 
 		cosine = self.cosine(vec_tag1[0], vec_tag2)
@@ -114,7 +98,7 @@ class MaisSimilar_Short(object):
 		if primeiros == 0:
 			primeiros = len(df_tags2)
 
-		# ordena decrescente e retorna somente os # primeiros casos
+		# Ordena decrescente e retorna somente os # primeiros casos
 		df_tags2['SIMILARIDADE'] = cosine
 		df_tags2.sort_values('SIMILARIDADE', ascending=False, inplace=True)
 
@@ -137,9 +121,6 @@ class MaisSimilar_Short(object):
 										 np.linalg.norm(vecs))
 
 
-	#--------------------------------------------------------------------------
-	# Separa POS dos tags em d2v_index
-	#--------------------------------------------------------------------------
 	def get_doctags_pos_por_tags_hdf5(self, df_tags):
 		# df_tags: qq DF q tenha tags como indice
 
@@ -161,39 +142,3 @@ class MaisSimilar_Short(object):
 		return pos_vecs, df_tags
 
 
-	#--------------------------------------------------------------------------
-	# NOVO - usa HDF5
-	# Obtem posicoes dos tags_tipo
-	# Retorna DF com tag(index) e pos(pos)
-	# tipo_tag = sigla da entidade (areaava, areagrd, areabas, areasub,
-	#             areaesp, tese, ppg, docente, discente)
-	# outro_tag = uma instancia especifica de tag (ex.: codigo de area)
-	#--------------------------------------------------------------------------
-	def get_doctags_pos_por_tipo_hdf5(self, tipo_tag=None):
-		# filtra ocorrencias de tags do tipo_tag2
-		if  tipo_tag == 'areaava' or tipo_tag == 'area':
-			tags_i = self.d2v_index.index.str.startswith('areaava-')
-		elif tipo_tag == 'areagrd':
-			tags_i = self.d2v_index.index.str.startswith('areagrd-')
-		elif tipo_tag == 'areabas':
-			tags_i = self.d2v_index.index.str.startswith('areabas-')
-		elif tipo_tag == 'areasub':
-			tags_i = self.d2v_index.index.str.startswith('areasub-')
-		elif tipo_tag == 'areaesp':
-			tags_i = self.d2v_index.index.str.startswith('areaesp-')
-		elif tipo_tag == 'discente':
-			tags_i = self.d2v_index.index.str.startswith('iddi-')
-		elif tipo_tag == 'docente':
-			tags_i = self.d2v_index.index.str.startswith('iddo-')
-		elif tipo_tag == 'artigo' or tipo_tag == 'eid':
-			tags_i = self.d2v_index.index.str.startswith('2-s2.0-')
-		elif tipo_tag == 'topico':
-			tags_i = self.d2v_index.index.str.startswith('t.')
-		elif tipo_tag == 'ppg':
-			tags_i = self.d2v_index.index.str.find('p',start=11)>-1
-		elif tipo_tag == 'tese':
-			tags_i = self.d2v_index.index.str.startswith('ida-')
-		else:
-			return pd.DataFrame()
-		# retorna DF somente com tags (index) e pos dos docvecs do tipo_tag
-		return self.d2v_index.loc[tags_i]
