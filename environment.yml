@@ -1,0 +1,19 @@
+name: "\Users\alexandre.uchoa\Google Drive\- DEVELOP\_conda-envs\capes-env"
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - plotly
+  - pandas
+  - jupyterlab
+  - ipywidgets
+  - ipython
+  - pathlib
+  - numpy
+  - networkx
+  - qgrid
+  - cufflinks
+  - matplotlib
+  - spacy
+  - h5py
+prefix: capes-env
