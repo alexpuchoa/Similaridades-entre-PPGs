@@ -176,13 +176,9 @@ class Graficos(object):
 				Area_Aval_Sec = (0,)
 
 			# Se os filtros ecolhidos forem muito abrangentes
-			cancelada = False
-			if Area_Aval_Sec[0] == 0:
-				if UF == 'Todas':
-					cancelada = True
-
-			if cancelada:
-				print('\n**Consulta cancelada. Recomenda-se refinar a seleção, pois essa busca pode levar muito tempo.')
+			if Area_Aval_Sec[0] == 0 and UF == 'Todas':
+				print('\n**Consulta cancelada. Recomenda-se refinar a seleção.',\
+					  'Escolha uma UF ou uma Área dos Similares.')
 				return
 
 			if Area_Aval_Pri == 0 and UF != 'Todas' and not Mesma_UF:
