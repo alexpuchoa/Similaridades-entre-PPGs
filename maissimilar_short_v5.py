@@ -9,12 +9,12 @@ Modificações:
 
 Por Alexandre Uchoa
 '''
-import re
+#import re
 import h5py
 import numpy as np
 import pandas as pd
 
-from time import time
+#from time import time
 
 from pathlib import Path
 relative_path = Path(__file__).parent
