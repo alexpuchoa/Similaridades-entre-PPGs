@@ -6,7 +6,7 @@ Modified on 1 Mar 2021
 """
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 from pathlib import Path
 import qgrid
 
@@ -21,7 +21,7 @@ import maissimilar_short_v5 as MS
 
 relative_path 		= Path(__file__).parent
 pasta				= {}
-pasta['estudos'] 	= relative_path.as_posix() + './estudos/'
+pasta['estudos'] 	= relative_path.as_posix() + '/estudos/'
 pasta_estudos = pasta['estudos']
 
 class Graficos(object):
