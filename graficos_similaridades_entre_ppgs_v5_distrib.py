@@ -182,7 +182,7 @@ class Graficos(object):
 				return
 
 			if Area_Aval_Pri == 0 and UF != 'Todas' and not Mesma_UF:
-				Mesma_UF= True
+				Mesma_UF = True
 				print('** AVISO: Assumido que se buscam PPGs similares na mesma UF. '+\
 					  'Caso contrario, a quantidade de possibilidades seria muito grande.')
 
