@@ -190,14 +190,14 @@ class HeatmapUF(object):
 		# Define widgets
 		warea 	= widgets.Dropdown(options=self.areas_menu,\
 									value = 45,\
-									layout=widgets.Layout(width='50%'), \
+									layout=widgets.Layout(width='40%'), \
 									description='Área', \
 									style=style)
 		
 		wsim 	= widgets.FloatSlider(min=0.3, max=self.max_slider, step=0.02,\
 									 value=self.max_slider - 0.1, \
-									 layout=widgets.Layout(width='50%'), \
-									 description='Similaridade', \
+									 layout=widgets.Layout(width='40%'), \
+									 description='Similaridade mínima', \
 									 style=style)
 
 		warea.observe(update_sim_range, 'value')
