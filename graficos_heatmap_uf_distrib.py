@@ -42,7 +42,7 @@ class HeatmapUF(object):
 	def load_simmatrix(self):
 		# Le matriz de SIM, com triangulo superior zerado
 		self.df_simmatrix = pd.DataFrame.from_records(np.load(pasta['kmeans']+\
-							'simmatrix-ppgs-ppgs_none_none.npy',\
+							'SIMMATRIX-PPGS-PPGS_None_None.npy',\
 							 allow_pickle=True))
 
 		fname = "SIMILARIDADE_DE_PPGS_None_None_COM_PPG_%s_2D.csv" % \
